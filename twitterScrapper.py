@@ -27,15 +27,9 @@ def send_email(sub,msg):
         print('Email sent') 
     except:
         print('Email failed to send') 
-# bearer token = 'AAAAAAAAAAAAAAAAAAAAAA3gRwEAAAAAvlFP%2BWFRlmPj08AaM%2BkouPbciNk%3DyZg3v0kSFc2YLucg27aRD7Z4inZ1rIJNcV1p0sIEy0B95bI6lx'
 
-consumer_key = 'mRUSaSFxBZPqrP9fRkPBwOyts'
-consumer_secret = 'r0b4fWInb5XLC80mPKv3nnKSANtKEBJoLzP4srgagljZalX4Dy'
-access_token = '1227784400684879880-s3GhKPw6E2vxfNiMzRwmbZLwBh71yP'
-access_token_secret = 'MRtLvygQPm8AWgCVFdQXYnQamZVo51tcvmAqRjXn6q03m'
-
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
+auth.set_access_token(config.access_token, config.access_token_secret)
 
 api = tweepy.API(auth)
 
