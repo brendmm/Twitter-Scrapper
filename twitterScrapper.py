@@ -3,8 +3,8 @@ from threading import Thread
 import time
 from tweepy.streaming import StreamListener
 import smtplib
+#Config file must be created to include api keys and email credentials
 import config
-import re
 
 def clean(text):
     print("Cleaning Text")
