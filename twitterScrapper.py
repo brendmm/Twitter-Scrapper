@@ -33,7 +33,7 @@ auth.set_access_token(config.access_token, config.access_token_secret)
 
 api = tweepy.API(auth)
 
-user = api.get_user(screen_name = '@brendmm1')
+user = api.get_user(screen_name = '@mattswider')
 
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -49,7 +49,11 @@ myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
 # Define a function for the thread
 def tweetListener (threadName):
     print("Running "+threadName+" thread")
-    myStream.filter(follow=[str(user.id)])
+    try:
+        myStream.filter(follow=[str(user.id)])
+        print("Streaming stopped")
+    except Exception as e:
+        print("Exception caught:", e)
 
 
 thread1 = Thread( target = tweetListener, args = ("worker", ) )
@@ -60,6 +64,12 @@ thread1.start()
 while(True):
     time.sleep(5)
     if not myStream.running:
-        print('Restarting worker thread')
-        thread1.join()
-        thread1.start()
+        try:
+            thread1.join()
+        except Exception as e:
+            print("Exception caught when joining thread", e)
+        try:
+            print('Restarting worker thread')
+            thread1.start()
+        except Exception as e:
+            print("Exception caught when starting thread", e)    
