@@ -39,7 +39,7 @@ class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         if (
             (not status.retweeted) and 
-            ('RT @' not in status.text) and 
+            ('RT @' != status.text[0:4]) and 
             (status.text[0:1] != '@')
         ):
             print("Status Received")
@@ -47,6 +47,8 @@ class MyStreamListener(tweepy.StreamListener):
             subject = text[0:3]
             msg = text
             send_email(subject,msg)
+        else:
+            print("Caught bad status")
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
