@@ -40,7 +40,7 @@ class MyStreamListener(tweepy.StreamListener):
         if (
             (not status.retweeted) and 
             ('RT @' not in status.text) and 
-            (status.text[0:11] != '@mattswider')
+            (status.text[0:1] != '@')
         ):
             print("Status Received")
             text=clean(status.text)
@@ -59,7 +59,7 @@ def tweetListener (threadName):
             myStream.filter(follow=[str(user.id)])
         except Exception as e:
             print("Exception caught:", e)
-        print('Restarting'+threadName+" thread")
+        print("Restarting "+threadName+" thread")
 
 
 thread1 = Thread( target = tweetListener, args = ("worker", ) )
