@@ -37,11 +37,16 @@ user = api.get_user(screen_name = '@mattswider')
 
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print("Status Received")
-        text=clean(status.text)
-        subject = text[0:3]
-        msg = text
-        send_email(subject,msg)
+        if (
+            (not status.retweeted) and 
+            ('RT @' not in status.text) and 
+            (status.text[0:11] != '@mattswider')
+        ):
+            print("Status Received")
+            text=clean(status.text)
+            subject = text[0:3]
+            msg = text
+            send_email(subject,msg)
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
@@ -49,11 +54,12 @@ myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
 # Define a function for the thread
 def tweetListener (threadName):
     print("Running "+threadName+" thread")
-    try:
-        myStream.filter(follow=[str(user.id)])
-        print("Streaming stopped")
-    except Exception as e:
-        print("Exception caught:", e)
+    while True:
+        try:
+            myStream.filter(follow=[str(user.id)])
+        except Exception as e:
+            print("Exception caught:", e)
+        print('Restarting'+threadName+" thread")
 
 
 thread1 = Thread( target = tweetListener, args = ("worker", ) )
@@ -66,10 +72,6 @@ while(True):
     if not myStream.running:
         try:
             thread1.join()
+            break
         except Exception as e:
-            print("Exception caught when joining thread", e)
-        try:
-            print('Restarting worker thread')
-            thread1.start()
-        except Exception as e:
-            print("Exception caught when starting thread", e)    
+            print("Exception caught when joining thread", e)  
